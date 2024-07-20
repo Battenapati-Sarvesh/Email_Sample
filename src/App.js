@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
-import { account, ID } from './lib/appwrite';
-import {useUser} from 'react';
-
-
+import { databases } from './lib/appwrite';
+import { ID } from 'appwrite';
 
 function App() {
-const user = useUser();
-const [email,setEmail] = useState("");
-
+  const [success,setSuccess] = useState(false);
+  const [email,setEmail] = useState("");
+  const submitUser = async () => {
+    try {
+      await databases.createDocument("need to fill this chimtu <database_id>", "need to fill this chimtu < collection_id>",
+      ID.unique(),
+       {
+        email: email
+      });
+      setSuccess(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
-
     <div className="EmailApp">
-      Email:<input type="text" id="EmailInput" placeholder='Email' value={email}></input>
-      <button type="button" onClick={()=>user.login(email)}>Login</button>
-      <button type="button" onClick={()=>user.register(email)}>Register</button>
-      
+      Email:<input type="text" id="EmailInput" placeholder='Email' value={email} 
+      onChange={val => setEmail(val.target.value)}></input>
+      <button type="button" onClick={submitUser}>Register</button>
+      <div>
+        {success && <div>Successfully submitted user.</div>}
+      </div>
     </div>
   );
 }
